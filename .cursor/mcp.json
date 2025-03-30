@@ -1,0 +1,12 @@
+{
+    "services": [
+      {
+        "name": "env-mcp",
+        "path": "/Users/xuyi/Desktop/github/env-mcp",
+        "command": "npm run dev",
+        "description": "获取当前系统的环境信息",
+        "version": "1.0.0"
+      }
+    ]
+  }
+  
