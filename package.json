@@ -1,5 +1,5 @@
 {
-  "name": "env-mcp",
+  "name": "@zhijianren/env-mcp",
   "version": "1.0.0",
   "description": "获取当前环境的 mcp",
   "main": "dist/index.js",
