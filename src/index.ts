@@ -30,6 +30,24 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
           properties: {},
           required: []
         }
+      },
+      {
+        name: "getCpuUsage",
+        description: "获取当前平台的 CPU 占用率",
+        inputSchema: {
+          type: "object",
+          properties: {},
+          required: []
+        }
+      },
+      {
+        name: "getDiskUsage",
+        description: "获取当前平台的硬盘使用率",
+        inputSchema: {
+          type: "object",
+          properties: {},
+          required: []
+        }
       }
     ]
   };
@@ -54,13 +72,38 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
         loadAvg: os.loadavg(),
         userInfo: os.userInfo(),
         tmpdir: os.tmpdir(),
-        homedir: os.homedir()
+        homedir: os.homedir(),
+        usedMemory: os.totalmem() - os.freemem(),
       };
 
       return {
         content: [{
           type: "text",
           text: JSON.stringify(systemInfo, null, 2)
+        }]
+      };
+    }
+    case "getCpuUsage": {
+      const cpus = os.cpus();
+      const totalIdle = cpus.reduce((acc, cpu) => acc + cpu.times.idle, 0);
+      const totalTick = cpus.reduce((acc, cpu) => acc + Object.values(cpu.times).reduce((a, b) => a + b, 0), 0);
+      const cpuUsage = 1 - totalIdle / totalTick;
+
+      return {
+        content: [{
+          type: "text",
+          text: JSON.stringify({ cpuUsage: (cpuUsage * 100).toFixed(2) + '%' }, null, 2)
+        }]
+      };
+    }
+    case "getDiskUsage": {
+      const { execSync } = require('child_process');
+      const diskUsage = execSync('df -h --output=used,size,pcent').toString();
+
+      return {
+        content: [{
+          type: "text",
+          text: diskUsage
         }]
       };
     }
