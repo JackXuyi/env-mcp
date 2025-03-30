@@ -5,17 +5,65 @@
 ## 安装
 
 ```bash
-npm install env-mcp
+npm install @zhijianren/env-mcp
 ```
 
 ## 使用方法
 
+### 基础使用
+
 ```typescript
-import { getSystemInfo } from 'env-mcp';
+import { getSystemInfo } from '@zhijianren/env-mcp';
 
 // 获取系统信息
 const systemInfo = await getSystemInfo();
 console.log(systemInfo);
+```
+
+### 在支持 AI MCP 的应用中使用
+
+在 Cursor 等支持 AI MCP 服务的应用中，您可以通过以下方式使用本服务：
+
+1. 在应用的 MCP 配置中添加服务：
+
+```json
+{
+  "services": {
+    "env": {
+      "name": "env-mcp",
+      "type": "npm",
+      "package": "@zhijianren/env-mcp",
+      "version": "^0.0.1"
+    }
+  }
+}
+```
+
+2. 在应用中调用服务：
+
+```typescript
+// 在 AI 工具函数中使用
+const systemInfo = await mcp.env.getSystemInfo();
+
+// 示例响应
+{
+  "platform": "darwin",
+  "arch": "arm64",
+  "hostname": "your-hostname",
+  "type": "Darwin",
+  "release": "24.3.0",
+  "totalMemory": 25769803776,
+  "freeMemory": 210976768,
+  "cpus": [...],
+  "networkInterfaces": {...},
+  "userInfo": {
+    "uid": 501,
+    "gid": 20,
+    "username": "your-username",
+    "homedir": "/Users/your-username",
+    "shell": "/bin/zsh"
+  }
+}
 ```
 
 返回的系统信息包含以下字段：
