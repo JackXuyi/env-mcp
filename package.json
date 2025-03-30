@@ -3,18 +3,29 @@
   "version": "1.0.0",
   "description": "获取当前环境的 mcp",
   "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
   "scripts": {
     "start": "node dist/index.js",
     "dev": "nodemon src/index.ts",
     "build": "tsc",
+    "prepublishOnly": "npm run build",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/JackXuyi/env-mcp.git"
   },
-  "keywords": [],
-  "author": "",
+  "keywords": [
+    "mcp",
+    "env",
+    "system-info"
+  ],
+  "author": "JackXuyi",
   "license": "ISC",
   "bugs": {
     "url": "https://github.com/JackXuyi/env-mcp/issues"
@@ -32,5 +43,8 @@
     "dotenv": "^16.4.7",
     "express": "^4.21.2",
     "zod": "^3.24.2"
+  },
+  "publishConfig": {
+    "access": "public"
   }
 }
