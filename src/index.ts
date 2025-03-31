@@ -5,8 +5,10 @@ import {
   ListToolsRequestSchema,
 } from "@modelcontextprotocol/sdk/types.js";
 import os from 'os';
+import { execSync } from "child_process"
+import { isatty } from "tty"
 
-const server = new Server(
+export const server = new Server(
   {
     name: "env-mcp-server",
     version: "1.0.0",
@@ -18,8 +20,7 @@ const server = new Server(
   }
 );
 
-// 列出可用的工具
-server.setRequestHandler(ListToolsRequestSchema, async () => {
+export const handleRequest = async () => {
   return {
     tools: [
       {
@@ -48,13 +49,21 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
           properties: {},
           required: []
         }
+      },
+      {
+        name: "getTerminalTypes",
+        description: "获取系统上支持的所有终端类型",
+        inputSchema: {
+          type: "object",
+          properties: {},
+          required: []
+        }
       }
     ]
   };
-});
+};
 
-// 处理工具调用
-server.setRequestHandler(CallToolRequestSchema, async (request) => {
+export const handleCallToolRequest = async (request: any) => {
   switch (request.params.name) {
     case "getSystemInfo": {
       const systemInfo = {
@@ -97,8 +106,14 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
       };
     }
     case "getDiskUsage": {
-      const { execSync } = require('child_process');
-      const diskUsage = execSync('df -h --output=used,size,pcent').toString();
+      let diskUsage;
+      if (os.platform() === 'darwin') {
+        // macOS 使用 df -h 命令
+        diskUsage = execSync('df -h').toString();
+      } else {
+        // 其他平台使用 df -h --output=used,size,pcent 命令
+        diskUsage = execSync('df -h --output=used,size,pcent').toString();
+      }
 
       return {
         content: [{
@@ -107,10 +122,25 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
         }]
       };
     }
+    case "getTerminalTypes": {
+      const terminalTypes = Object.keys(isatty);
+      return {
+        content: [{
+          type: "text",
+          text: JSON.stringify({ terminalTypes }, null, 2)
+        }]
+      };
+    }
     default:
       throw new Error("未知的工具");
   }
-});
+}
+
+// 列出可用的工具
+server.setRequestHandler(ListToolsRequestSchema, handleRequest);
+
+// 处理工具调用
+server.setRequestHandler(CallToolRequestSchema, handleCallToolRequest);
 
 // 启动服务器
 async function main() {
@@ -119,7 +149,11 @@ async function main() {
   console.error("系统环境信息 MCP 服务器已在 stdio 上运行");
 }
 
-main().catch((error) => {
-  console.error("服务器错误:", error);
-  process.exit(1);
-});
+if (process.env.NODE_ENV !== 'test') {
+  main().catch((error) => {
+    console.error("服务器错误:", error);
+    process.exit(1);
+  });
+}
+
+
