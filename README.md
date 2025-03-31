@@ -15,16 +15,6 @@
 npm install @zhijianren/env-mcp -g
 ```
 
-## 快速开始
-
-```typescript
-import { getSystemInfo } from '@zhijianren/env-mcp';
-
-// 获取系统信息
-const systemInfo = await getSystemInfo();
-console.log(systemInfo);
-```
-
 ## 在支持 MCP 的应用中使用
 
 ### 1. 配置 MCP 服务
