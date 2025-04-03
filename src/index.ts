@@ -7,6 +7,8 @@ import {
 import os from 'os';
 import { execSync } from "child_process"
 import si from 'systeminformation'; // 导入 systeminformation 库
+import fs from 'fs';
+import plist from 'plist'; // 导入 plist 模块
 
 export const server = new Server(
   {
@@ -431,16 +433,31 @@ export const handleCallToolRequest = async (request: any) => {
       let appSchemas: Record<string, string[]> = {};
       try {
         if (os.platform() === 'darwin') {
-          // macOS 使用系统命令获取 URL Scheme 信息
-          const schemes = execSync('lsregister -dump | grep -E "bundle.*URL Schemes"').toString().split('\n');
-          schemes.forEach(line => {
-            const match = line.match(/bundle: (.+?) URL Schemes: (.+)/);
-            if (match) {
-              const bundle = match[1];
-              const schemes = match[2].split(',').map(s => s.trim());
-              appSchemas[bundle] = schemes;
+          // macOS 使用 mdfind 命令查找所有 .app 包
+          const appPaths = execSync('mdfind "kMDItemContentType == com.apple.application-bundle"').toString().split('\n');
+          for (const appPath of appPaths) {
+            if (appPath) {
+              try {
+                // 读取 Info.plist 文件
+                const plistPath = `${appPath}/Contents/Info.plist`;
+                if (fs.existsSync(plistPath)) {
+                  const plistContent = fs.readFileSync(plistPath, 'utf8');
+                  const plistData: any = plist.parse(plistContent);
+                  if (plistData.CFBundleURLTypes) {
+                    const schemes = plistData.CFBundleURLTypes
+                      .flatMap((type: any) => type.CFBundleURLSchemes || [])
+                      .filter((scheme: string) => scheme);
+                    if (schemes.length > 0) {
+                      appSchemas[plistData.CFBundleName || appPath] = schemes;
+                    }
+                  }
+                }
+              } catch (error) {
+                console.warn(`无法读取 ${appPath} 的 Info.plist 文件:`, error);
+                continue; // 跳过无法读取的 .app 包
+              }
             }
-          });
+          }
         } else if (os.platform() === 'linux') {
           // Linux 通过检查 .desktop 文件获取 URL Scheme 信息
           const desktopFiles = execSync('find /usr/share/applications /~/.local/share/applications -name "*.desktop"').toString().split('\n');
