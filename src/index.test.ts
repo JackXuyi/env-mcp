@@ -221,6 +221,14 @@ describe("handleCallToolRequest", () => {
     expect(vpnInfo).toBeDefined();
   });
 
+  it("应该返回已安装的应用信息", async () => {
+    const result = await handleCallToolRequest({
+      params: { name: "getInstalledApps" },
+    });
+    const installedApps = JSON.parse(result.content[0].text);
+    expect(installedApps).toHaveProperty("installedApps");
+  });
+
   it("应该抛出未知工具错误", async () => {
     await expect(
       handleCallToolRequest({ params: { name: "unknownTool" } })

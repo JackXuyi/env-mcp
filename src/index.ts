@@ -139,6 +139,15 @@ export const handleRequest = async () => {
           properties: {},
           required: []
         }
+      },
+      {
+        name: "getInstalledApps",
+        description: "获取当前设备已安装的应用信息",
+        inputSchema: {
+          type: "object",
+          properties: {},
+          required: []
+        }
       }
     ]
   };
@@ -358,6 +367,36 @@ export const handleCallToolRequest = async (request: any) => {
         content: [{
           type: "text",
           text: JSON.stringify(vpnInterfaces, null, 2)
+        }]
+      };
+    }
+    case "getInstalledApps": {
+      let installedApps: string[] = [];
+      try {
+        if (os.platform() === 'darwin') {
+          // macOS 使用 system_profiler 命令获取已安装的应用
+          const apps = execSync('system_profiler SPApplicationsDataType -json').toString();
+          installedApps = JSON.parse(apps).SPApplicationsDataType.map((app: any) => app._name);
+        } else if (os.platform() === 'linux') {
+          // Linux 使用 dpkg 或 rpm 命令获取已安装的软件包
+          try {
+            installedApps = execSync('dpkg --list | grep ^ii').toString().split('\n').map(line => line.split(/\s+/)[1]);
+          } catch (error) {
+            installedApps = execSync('rpm -qa').toString().split('\n');
+          }
+        } else if (os.platform() === 'win32') {
+          // Windows 使用 Get-WmiObject 命令获取已安装的应用
+          const apps = execSync('powershell -Command "Get-WmiObject -Class Win32_Product | Select-Object -Property Name"').toString();
+          installedApps = apps.split('\n').filter(line => line.trim()).slice(1);
+        }
+      } catch (error) {
+        console.error("获取已安装应用信息失败:", error);
+      }
+
+      return {
+        content: [{
+          type: "text",
+          text: JSON.stringify({ installedApps }, null, 2)
         }]
       };
     }
