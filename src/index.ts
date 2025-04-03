@@ -130,6 +130,15 @@ export const handleRequest = async () => {
           properties: {},
           required: []
         }
+      },
+      {
+        name: "getVpnInfo",
+        description: "获取当前设备的 VPN 信息",
+        inputSchema: {
+          type: "object",
+          properties: {},
+          required: []
+        }
       }
     ]
   };
@@ -326,6 +335,29 @@ export const handleCallToolRequest = async (request: any) => {
         content: [{
           type: "text",
           text: JSON.stringify(hardwareInfo, null, 2)
+        }]
+      };
+    }
+    case "getVpnInfo": {
+      const networkInterfaces = os.networkInterfaces();
+      const vpnInterfaces: Record<string, any> = {};
+
+      for (const [interfaceName, interfaces = []] of Object.entries(networkInterfaces)) {
+        // 检测常见的 VPN 接口名称（如 tun0, ppp0, etc）
+        if (interfaceName.startsWith('tun') || interfaceName.startsWith('ppp')) {
+          vpnInterfaces[interfaceName] = interfaces.map((info) => ({
+            address: info.address,
+            netmask: info.netmask,
+            family: info.family,
+            internal: info.internal
+          }));
+        }
+      }
+
+      return {
+        content: [{
+          type: "text",
+          text: JSON.stringify(vpnInterfaces, null, 2)
         }]
       };
     }

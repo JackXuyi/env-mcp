@@ -213,6 +213,14 @@ describe("handleCallToolRequest", () => {
     expect(hardwareInfo).toHaveProperty("serial");
   });
 
+  it("应该返回 VPN 信息", async () => {
+    const result = await handleCallToolRequest({
+      params: { name: "getVpnInfo" },
+    });
+    const vpnInfo = JSON.parse(result.content[0].text);
+    expect(vpnInfo).toBeDefined();
+  });
+
   it("应该抛出未知工具错误", async () => {
     await expect(
       handleCallToolRequest({ params: { name: "unknownTool" } })
