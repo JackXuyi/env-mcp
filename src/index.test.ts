@@ -229,6 +229,14 @@ describe("handleCallToolRequest", () => {
     expect(installedApps).toHaveProperty("installedApps");
   });
 
+  it("应该返回 Wi-Fi 信息", async () => {
+    const result = await handleCallToolRequest({
+      params: { name: "getWifiInfo" },
+    });
+    const wifiInfo = JSON.parse(result.content[0].text);
+    expect(wifiInfo).toBeDefined();
+  });
+
   it("应该抛出未知工具错误", async () => {
     await expect(
       handleCallToolRequest({ params: { name: "unknownTool" } })

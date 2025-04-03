@@ -148,6 +148,15 @@ export const handleRequest = async () => {
           properties: {},
           required: []
         }
+      },
+      {
+        name: "getWifiInfo",
+        description: "获取当前设备的 Wi-Fi 信息",
+        inputSchema: {
+          type: "object",
+          properties: {},
+          required: []
+        }
       }
     ]
   };
@@ -397,6 +406,15 @@ export const handleCallToolRequest = async (request: any) => {
         content: [{
           type: "text",
           text: JSON.stringify({ installedApps }, null, 2)
+        }]
+      };
+    }
+    case "getWifiInfo": {
+      const wifiInfo = await si.wifiNetworks();
+      return {
+        content: [{
+          type: "text",
+          text: JSON.stringify(wifiInfo, null, 2)
         }]
       };
     }
