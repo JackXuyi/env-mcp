@@ -183,6 +183,26 @@ describe("handleCallToolRequest", () => {
     expect(ipInfo).toHaveProperty("en0");
   });
 
+  it("应该返回代理信息", async () => {
+    // 设置测试环境变量
+    process.env.HTTP_PROXY = 'http://proxy.example.com:8080';
+    process.env.HTTPS_PROXY = 'https://proxy.example.com:8080';
+    process.env.NO_PROXY = 'localhost,127.0.0.1';
+
+    const result = await handleCallToolRequest({
+      params: { name: "getProxyInfo" },
+    });
+    const proxyInfo = JSON.parse(result.content[0].text);
+    expect(proxyInfo).toHaveProperty("httpProxy");
+    expect(proxyInfo).toHaveProperty("httpsProxy");
+    expect(proxyInfo).toHaveProperty("noProxy");
+
+    // 清理测试环境变量
+    delete process.env.HTTP_PROXY;
+    delete process.env.HTTPS_PROXY;
+    delete process.env.NO_PROXY;
+  });
+
   it("应该抛出未知工具错误", async () => {
     await expect(
       handleCallToolRequest({ params: { name: "unknownTool" } })

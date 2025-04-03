@@ -6,7 +6,6 @@ import {
 } from "@modelcontextprotocol/sdk/types.js";
 import os from 'os';
 import { execSync } from "child_process"
-import { isatty } from "tty"
 
 export const server = new Server(
   {
@@ -107,6 +106,15 @@ export const handleRequest = async () => {
       {
         name: "getIpv6Info",
         description: "获取当前设备的 IPv6 信息",
+        inputSchema: {
+          type: "object",
+          properties: {},
+          required: []
+        }
+      },
+      {
+        name: "getProxyInfo",
+        description: "获取当前网络的所有代理信息",
         inputSchema: {
           type: "object",
           properties: {},
@@ -285,6 +293,20 @@ export const handleCallToolRequest = async (request: any) => {
         content: [{
           type: "text",
           text: JSON.stringify(ipInfo, null, 2)
+        }]
+      };
+    }
+    case "getProxyInfo": {
+      const proxyInfo = {
+        httpProxy: process.env.HTTP_PROXY || process.env.http_proxy || '未配置',
+        httpsProxy: process.env.HTTPS_PROXY || process.env.https_proxy || '未配置',
+        noProxy: process.env.NO_PROXY || process.env.no_proxy || '未配置'
+      };
+
+      return {
+        content: [{
+          type: "text",
+          text: JSON.stringify(proxyInfo, null, 2)
         }]
       };
     }
