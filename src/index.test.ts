@@ -203,6 +203,16 @@ describe("handleCallToolRequest", () => {
     delete process.env.NO_PROXY;
   });
 
+  it("应该返回硬件信息", async () => {
+    const result = await handleCallToolRequest({
+      params: { name: "getHardwareInfo" },
+    });
+    const hardwareInfo = JSON.parse(result.content[0].text);
+    expect(hardwareInfo).toHaveProperty("manufacturer");
+    expect(hardwareInfo).toHaveProperty("model");
+    expect(hardwareInfo).toHaveProperty("serial");
+  });
+
   it("应该抛出未知工具错误", async () => {
     await expect(
       handleCallToolRequest({ params: { name: "unknownTool" } })

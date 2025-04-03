@@ -6,6 +6,7 @@ import {
 } from "@modelcontextprotocol/sdk/types.js";
 import os from 'os';
 import { execSync } from "child_process"
+import si from 'systeminformation'; // 导入 systeminformation 库
 
 export const server = new Server(
   {
@@ -115,6 +116,15 @@ export const handleRequest = async () => {
       {
         name: "getProxyInfo",
         description: "获取当前网络的所有代理信息",
+        inputSchema: {
+          type: "object",
+          properties: {},
+          required: []
+        }
+      },
+      {
+        name: "getHardwareInfo",
+        description: "获取当前设备的硬件信息，包括生产日期等",
         inputSchema: {
           type: "object",
           properties: {},
@@ -307,6 +317,15 @@ export const handleCallToolRequest = async (request: any) => {
         content: [{
           type: "text",
           text: JSON.stringify(proxyInfo, null, 2)
+        }]
+      };
+    }
+    case "getHardwareInfo": {
+      const hardwareInfo = await si.system();
+      return {
+        content: [{
+          type: "text",
+          text: JSON.stringify(hardwareInfo, null, 2)
         }]
       };
     }

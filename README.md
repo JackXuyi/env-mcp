@@ -78,6 +78,7 @@ const proxyInfo = await mcp.env.getProxyInfo();
 
 | 工具名称         | 描述                           | 返回数据结构示例                                                                 |
 |------------------|--------------------------------|----------------------------------------------------------------------------------|
+| `getHardwareInfo` | 获取当前设备的硬件信息，包括生产日期等 | `{ manufacturer: string, model: string, version: string, serial: string, uuid: string, sku: string, virtual: boolean }` |
 | `getPlatformInfo` | 获取当前系统的平台信息         | `{ platform: string, arch: string, hostname: string, type: string, release: string, version: string }` |
 | `getMemoryInfo`   | 获取当前系统的内存信息         | `{ totalMemory: number, freeMemory: number, usedMemory: number }`                |
 | `getCpuInfo`      | 获取当前系统的 CPU 信息        | `{ cpus: Array<{ model: string, speed: number, times: { user: number, nice: number, sys: number, idle: number, irq: number } }> }` |
