@@ -157,6 +157,15 @@ export const handleRequest = async () => {
           properties: {},
           required: []
         }
+      },
+      {
+        name: "getAppSchemas",
+        description: "获取当前设备所有注册唤醒的 App Schema 信息",
+        inputSchema: {
+          type: "object",
+          properties: {},
+          required: []
+        }
       }
     ]
   };
@@ -415,6 +424,51 @@ export const handleCallToolRequest = async (request: any) => {
         content: [{
           type: "text",
           text: JSON.stringify(wifiInfo, null, 2)
+        }]
+      };
+    }
+    case "getAppSchemas": {
+      let appSchemas: Record<string, string[]> = {};
+      try {
+        if (os.platform() === 'darwin') {
+          // macOS 使用系统命令获取 URL Scheme 信息
+          const schemes = execSync('lsregister -dump | grep -E "bundle.*URL Schemes"').toString().split('\n');
+          schemes.forEach(line => {
+            const match = line.match(/bundle: (.+?) URL Schemes: (.+)/);
+            if (match) {
+              const bundle = match[1];
+              const schemes = match[2].split(',').map(s => s.trim());
+              appSchemas[bundle] = schemes;
+            }
+          });
+        } else if (os.platform() === 'linux') {
+          // Linux 通过检查 .desktop 文件获取 URL Scheme 信息
+          const desktopFiles = execSync('find /usr/share/applications /~/.local/share/applications -name "*.desktop"').toString().split('\n');
+          desktopFiles.forEach(file => {
+            if (file) {
+              const content = execSync(`cat ${file}`).toString();
+              const schemes = content.match(/MimeType=(.+)/)?.[1].split(';').filter(s => s.startsWith('x-scheme-handler/')).map(s => s.replace('x-scheme-handler/', ''));
+              if (schemes && schemes.length > 0) {
+                appSchemas[file] = schemes;
+              }
+            }
+          });
+        } else if (os.platform() === 'win32') {
+          // Windows 通过注册表获取 URL Scheme 信息
+          const regOutput = execSync('reg query HKEY_CLASSES_ROOT /f "URL Protocol" /s').toString();
+          const schemes = regOutput.split('\n').filter(line => line.trim().startsWith('HKEY_CLASSES_ROOT\\')).map(line => line.split('\\')[1]);
+          schemes.forEach(scheme => {
+            appSchemas[scheme] = [scheme];
+          });
+        }
+      } catch (error) {
+        console.error("获取 App Schema 信息失败:", error);
+      }
+
+      return {
+        content: [{
+          type: "text",
+          text: JSON.stringify(appSchemas, null, 2)
         }]
       };
     }
