@@ -219,7 +219,18 @@ export const handleCallToolRequest = async (request: any) => {
       };
     }
     case "getTerminalTypes": {
-      const terminalTypes = Object.keys(isatty);
+      let terminalTypes: string[] = [];
+      try {
+        // 读取 /etc/shells 文件获取支持的终端类型
+        const shells = execSync('cat /etc/shells').toString().split('\n');
+        terminalTypes = shells
+          .filter((shell) => shell.trim() && !shell.startsWith('#')) // 过滤空行和注释
+          .map((shell) => shell.split('/').pop() || ''); // 提取 shell 名称
+      } catch (error) {
+        // 如果读取失败，返回默认的终端类型
+        terminalTypes = ['bash', 'cmd', 'powershell', 'zsh', 'fish', 'sh', 'ksh', 'csh'];
+      }
+
       return {
         content: [{
           type: "text",

@@ -164,6 +164,7 @@ describe("handleCallToolRequest", () => {
     });
     const terminalTypes = JSON.parse(result.content[0].text);
     expect(terminalTypes).toHaveProperty("terminalTypes");
+    expect(terminalTypes.terminalTypes.length).toBeGreaterThan(0);
   });
 
   it("应该返回 IPv4 信息", async () => {
