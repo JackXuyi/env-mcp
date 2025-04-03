@@ -24,15 +24,50 @@ export const handleRequest = async () => {
   return {
     tools: [
       {
-        name: "getSystemInfo",
-        description: "获取当前系统的环境信息",
+        name: "getPlatformInfo",
+        description: "获取当前系统的平台信息",
         inputSchema: {
           type: "object",
           properties: {},
           required: []
         }
       },
-      
+      {
+        name: "getMemoryInfo",
+        description: "获取当前系统的内存信息",
+        inputSchema: {
+          type: "object",
+          properties: {},
+          required: []
+        }
+      },
+      {
+        name: "getCpuInfo",
+        description: "获取当前系统的 CPU 信息",
+        inputSchema: {
+          type: "object",
+          properties: {},
+          required: []
+        }
+      },
+      {
+        name: "getNetworkInfo",
+        description: "获取当前系统的网络信息",
+        inputSchema: {
+          type: "object",
+          properties: {},
+          required: []
+        }
+      },
+      {
+        name: "getUserInfo",
+        description: "获取当前系统的用户信息",
+        inputSchema: {
+          type: "object",
+          properties: {},
+          required: []
+        }
+      },
       {
         name: "getCpuUsage",
         description: "获取当前平台的 CPU 占用率",
@@ -84,30 +119,72 @@ export const handleRequest = async () => {
 
 export const handleCallToolRequest = async (request: any) => {
   switch (request.params.name) {
-    case "getSystemInfo": {
-      const systemInfo = {
+    case "getPlatformInfo": {
+      const platformInfo = {
         platform: os.platform(),
         arch: os.arch(),
         hostname: os.hostname(),
         type: os.type(),
         release: os.release(),
-        version: os.version(),
-        totalMemory: os.totalmem(),
-        freeMemory: os.freemem(),
-        cpus: os.cpus(),
-        networkInterfaces: os.networkInterfaces(),
-        uptime: os.uptime(),
-        loadAvg: os.loadavg(),
-        userInfo: os.userInfo(),
-        tmpdir: os.tmpdir(),
-        homedir: os.homedir(),
-        usedMemory: os.totalmem() - os.freemem(),
+        version: os.version()
       };
 
       return {
         content: [{
           type: "text",
-          text: JSON.stringify(systemInfo, null, 2)
+          text: JSON.stringify(platformInfo, null, 2)
+        }]
+      };
+    }
+    case "getMemoryInfo": {
+      const memoryInfo = {
+        totalMemory: os.totalmem(),
+        freeMemory: os.freemem(),
+        usedMemory: os.totalmem() - os.freemem()
+      };
+
+      return {
+        content: [{
+          type: "text",
+          text: JSON.stringify(memoryInfo, null, 2)
+        }]
+      };
+    }
+    case "getCpuInfo": {
+      const cpuInfo = {
+        cpus: os.cpus()
+      };
+
+      return {
+        content: [{
+          type: "text",
+          text: JSON.stringify(cpuInfo, null, 2)
+        }]
+      };
+    }
+    case "getNetworkInfo": {
+      const networkInfo = {
+        networkInterfaces: os.networkInterfaces()
+      };
+
+      return {
+        content: [{
+          type: "text",
+          text: JSON.stringify(networkInfo, null, 2)
+        }]
+      };
+    }
+    case "getUserInfo": {
+      const userInfo = {
+        userInfo: os.userInfo(),
+        tmpdir: os.tmpdir(),
+        homedir: os.homedir()
+      };
+
+      return {
+        content: [{
+          type: "text",
+          text: JSON.stringify(userInfo, null, 2)
         }]
       };
     }

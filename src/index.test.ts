@@ -4,8 +4,44 @@ describe("handleRequest", () => {
   it("应该返回正确的工具列表", async () => {
     const result = await handleRequest();
     expect(result.tools).toContainEqual({
-      name: "getSystemInfo",
-      description: "获取当前系统的环境信息",
+      name: "getPlatformInfo",
+      description: "获取当前系统的平台信息",
+      inputSchema: {
+        type: "object",
+        properties: {},
+        required: [],
+      },
+    });
+    expect(result.tools).toContainEqual({
+      name: "getMemoryInfo",
+      description: "获取当前系统的内存信息",
+      inputSchema: {
+        type: "object",
+        properties: {},
+        required: [],
+      },
+    });
+    expect(result.tools).toContainEqual({
+      name: "getCpuInfo",
+      description: "获取当前系统的 CPU 信息",
+      inputSchema: {
+        type: "object",
+        properties: {},
+        required: [],
+      },
+    });
+    expect(result.tools).toContainEqual({
+      name: "getNetworkInfo",
+      description: "获取当前系统的网络信息",
+      inputSchema: {
+        type: "object",
+        properties: {},
+        required: [],
+      },
+    });
+    expect(result.tools).toContainEqual({
+      name: "getUserInfo",
+      description: "获取当前系统的用户信息",
       inputSchema: {
         type: "object",
         properties: {},
@@ -48,18 +84,63 @@ describe("handleRequest", () => {
         required: [],
       },
     });
+    expect(result.tools).toContainEqual({
+      name: "getIpv6Info",
+      description: "获取当前设备的 IPv6 信息",
+      inputSchema: {
+        type: "object",
+        properties: {},
+        required: [],
+      },
+    });
   });
 });
 
 describe("handleCallToolRequest", () => {
-  it("应该返回系统信息", async () => {
+  it("应该返回平台信息", async () => {
     const result = await handleCallToolRequest({
-      params: { name: "getSystemInfo" },
+      params: { name: "getPlatformInfo" },
     });
-    const systemInfo = JSON.parse(result.content[0].text);
-    expect(systemInfo).toHaveProperty("platform");
-    expect(systemInfo).toHaveProperty("arch");
-    expect(systemInfo).toHaveProperty("hostname");
+    const platformInfo = JSON.parse(result.content[0].text);
+    expect(platformInfo).toHaveProperty("platform");
+    expect(platformInfo).toHaveProperty("arch");
+    expect(platformInfo).toHaveProperty("hostname");
+  });
+
+  it("应该返回内存信息", async () => {
+    const result = await handleCallToolRequest({
+      params: { name: "getMemoryInfo" },
+    });
+    const memoryInfo = JSON.parse(result.content[0].text);
+    expect(memoryInfo).toHaveProperty("totalMemory");
+    expect(memoryInfo).toHaveProperty("freeMemory");
+    expect(memoryInfo).toHaveProperty("usedMemory");
+  });
+
+  it("应该返回 CPU 信息", async () => {
+    const result = await handleCallToolRequest({
+      params: { name: "getCpuInfo" },
+    });
+    const cpuInfo = JSON.parse(result.content[0].text);
+    expect(cpuInfo).toHaveProperty("cpus");
+  });
+
+  it("应该返回网络信息", async () => {
+    const result = await handleCallToolRequest({
+      params: { name: "getNetworkInfo" },
+    });
+    const networkInfo = JSON.parse(result.content[0].text);
+    expect(networkInfo).toHaveProperty("networkInterfaces");
+  });
+
+  it("应该返回用户信息", async () => {
+    const result = await handleCallToolRequest({
+      params: { name: "getUserInfo" },
+    });
+    const userInfo = JSON.parse(result.content[0].text);
+    expect(userInfo).toHaveProperty("userInfo");
+    expect(userInfo).toHaveProperty("tmpdir");
+    expect(userInfo).toHaveProperty("homedir");
   });
 
   it("应该返回 CPU 使用率", async () => {
@@ -100,6 +181,7 @@ describe("handleCallToolRequest", () => {
     const ipInfo = JSON.parse(result.content[0].text);
     expect(ipInfo).toHaveProperty("en0");
   });
+
   it("应该抛出未知工具错误", async () => {
     await expect(
       handleCallToolRequest({ params: { name: "unknownTool" } })
