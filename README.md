@@ -40,49 +40,55 @@ npm install @zhijianren/env-mcp -g
 ### 2. 调用服务
 
 ```typescript
-const systemInfo = await mcp.env.getSystemInfo();
+// 获取平台信息
+const platformInfo = await mcp.env.getPlatformInfo();
+
+// 获取内存信息
+const memoryInfo = await mcp.env.getMemoryInfo();
+
+// 获取 CPU 信息
+const cpuInfo = await mcp.env.getCpuInfo();
+
+// 获取网络信息
+const networkInfo = await mcp.env.getNetworkInfo();
+
+// 获取用户信息
+const userInfo = await mcp.env.getUserInfo();
+
+// 获取 CPU 使用率
+const cpuUsage = await mcp.env.getCpuUsage();
+
+// 获取硬盘使用率
+const diskUsage = await mcp.env.getDiskUsage();
+
+// 获取终端类型
+const terminalTypes = await mcp.env.getTerminalTypes();
+
+// 获取 IPv4 信息
+const ipv4Info = await mcp.env.getIpv4Info();
+
+// 获取 IPv6 信息
+const ipv6Info = await mcp.env.getIpv6Info();
+
+// 获取代理信息
+const proxyInfo = await mcp.env.getProxyInfo();
 ```
 
-### 返回数据结构
+### 支持的工具列表
 
-```typescript
-{
-  platform: string;        // 操作系统平台
-  arch: string;            // 系统架构
-  hostname: string;        // 主机名
-  type: string;            // 系统类型
-  release: string;         // 系统版本
-  totalMemory: number;     // 总内存（字节）
-  freeMemory: number;      // 可用内存（字节）
-  cpus: Array<{           // CPU 信息
-    model: string;
-    speed: number;
-    times: {
-      user: number;
-      nice: number;
-      sys: number;
-      idle: number;
-      irq: number;
-    };
-  }>;
-  networkInterfaces: {     // 网络接口信息
-    [key: string]: Array<{
-      address: string;
-      netmask: string;
-      family: string;
-      mac: string;
-      internal: boolean;
-    }>;
-  };
-  userInfo: {             // 用户信息
-    uid: number;
-    gid: number;
-    username: string;
-    homedir: string;
-    shell: string;
-  };
-}
-```
+| 工具名称         | 描述                           | 返回数据结构示例                                                                 |
+|------------------|--------------------------------|----------------------------------------------------------------------------------|
+| `getPlatformInfo` | 获取当前系统的平台信息         | `{ platform: string, arch: string, hostname: string, type: string, release: string, version: string }` |
+| `getMemoryInfo`   | 获取当前系统的内存信息         | `{ totalMemory: number, freeMemory: number, usedMemory: number }`                |
+| `getCpuInfo`      | 获取当前系统的 CPU 信息        | `{ cpus: Array<{ model: string, speed: number, times: { user: number, nice: number, sys: number, idle: number, irq: number } }> }` |
+| `getNetworkInfo`  | 获取当前系统的网络信息         | `{ networkInterfaces: { [key: string]: Array<{ address: string, netmask: string, family: string, mac: string, internal: boolean }> } }` |
+| `getUserInfo`     | 获取当前系统的用户信息         | `{ userInfo: { uid: number, gid: number, username: string, homedir: string, shell: string }, tmpdir: string, homedir: string }` |
+| `getCpuUsage`     | 获取当前平台的 CPU 占用率      | `{ cpuUsage: string }`                                                           |
+| `getDiskUsage`    | 获取当前平台的硬盘使用率       | `string`（`df -h` 命令的输出）                                                   |
+| `getTerminalTypes`| 获取系统上支持的所有终端类型   | `{ terminalTypes: string[] }`                                                    |
+| `getIpv4Info`     | 获取当前设备的 IPv4 信息       | `{ [key: string]: Array<{ address: string, netmask: string, family: string, internal: boolean }> }` |
+| `getIpv6Info`     | 获取当前设备的 IPv6 信息       | `{ [key: string]: Array<{ address: string, netmask: string, family: string, internal: boolean }> }` |
+| `getProxyInfo`    | 获取当前网络的所有代理信息     | `{ httpProxy: string, httpsProxy: string, noProxy: string }`                     |
 
 ## 开发指南
 
