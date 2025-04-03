@@ -68,6 +68,15 @@ export const handleRequest = async () => {
           properties: {},
           required: []
         }
+      },
+      {
+        name: "getIpv6Info",
+        description: "获取当前设备的 IPv6 信息",
+        inputSchema: {
+          type: "object",
+          properties: {},
+          required: []
+        }
       }
     ]
   };
@@ -156,6 +165,31 @@ export const handleCallToolRequest = async (request: any) => {
           }));
         if (ipv4Interfaces.length > 0) {
           ipInfo[interfaceName] = ipv4Interfaces;
+        }
+      }
+
+      return {
+        content: [{
+          type: "text",
+          text: JSON.stringify(ipInfo, null, 2)
+        }]
+      };
+    }
+    case "getIpv6Info": {
+      const networkInterfaces = os.networkInterfaces();
+      const ipInfo: Record<string, { address: string; netmask: string; family: string; internal: boolean }[]> = {};
+
+      for (const [interfaceName, interfaces = []] of Object.entries(networkInterfaces)) {
+        const ipv6Interfaces = interfaces
+          .filter((info) => info.family === 'IPv6')
+          .map((info) => ({
+            address: info.address,
+            netmask: info.netmask,
+            family: info.family,
+            internal: info.internal
+          }));
+        if (ipv6Interfaces.length > 0) {
+          ipInfo[interfaceName] = ipv6Interfaces;
         }
       }
 
