@@ -32,6 +32,7 @@ export const handleRequest = async () => {
           required: []
         }
       },
+      
       {
         name: "getCpuUsage",
         description: "获取当前平台的 CPU 占用率",
@@ -53,6 +54,15 @@ export const handleRequest = async () => {
       {
         name: "getTerminalTypes",
         description: "获取系统上支持的所有终端类型",
+        inputSchema: {
+          type: "object",
+          properties: {},
+          required: []
+        }
+      },
+      {
+        name: "getIpv4Info",
+        description: "获取当前设备的 IPv4 信息",
         inputSchema: {
           type: "object",
           properties: {},
@@ -128,6 +138,31 @@ export const handleCallToolRequest = async (request: any) => {
         content: [{
           type: "text",
           text: JSON.stringify({ terminalTypes }, null, 2)
+        }]
+      };
+    }
+    case "getIpv4Info": {
+      const networkInterfaces = os.networkInterfaces();
+      const ipInfo: Record<string, { address: string; netmask: string; family: string; internal: boolean }[]> = {};
+
+      for (const [interfaceName, interfaces = []] of Object.entries(networkInterfaces)) {
+        const ipv4Interfaces = interfaces
+          .filter((info) => info.family === 'IPv4')
+          .map((info) => ({
+            address: info.address,
+            netmask: info.netmask,
+            family: info.family,
+            internal: info.internal
+          }));
+        if (ipv4Interfaces.length > 0) {
+          ipInfo[interfaceName] = ipv4Interfaces;
+        }
+      }
+
+      return {
+        content: [{
+          type: "text",
+          text: JSON.stringify(ipInfo, null, 2)
         }]
       };
     }
