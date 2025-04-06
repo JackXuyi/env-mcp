@@ -168,6 +168,15 @@ export const handleRequest = async () => {
           properties: {},
           required: []
         }
+      },
+      {
+        name: "getTimezone",
+        description: "获取当前设备的时区信息",
+        inputSchema: {
+          type: "object",
+          properties: {},
+          required: []
+        }
       }
     ]
   };
@@ -486,6 +495,15 @@ export const handleCallToolRequest = async (request: any) => {
         content: [{
           type: "text",
           text: JSON.stringify(appSchemas, null, 2)
+        }]
+      };
+    }
+    case "getTimezone": {
+      const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+      return {
+        content: [{
+          type: "text",
+          text: JSON.stringify({ timezone }, null, 2)
         }]
       };
     }
