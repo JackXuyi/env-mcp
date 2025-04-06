@@ -39,11 +39,11 @@
     "nodemon": "^3.1.9",
     "ts-jest": "^29.3.0",
     "ts-node": "^10.9.2",
+    "dotenv": "^16.4.7",
     "typescript": "^5.8.2"
   },
   "dependencies": {
-    "@modelcontextprotocol/sdk": "^1.8.0",
-    "dotenv": "^16.4.7",
+    "@modelcontextprotocol/sdk": "^1.8.0",    
     "plist": "^3.1.0",
     "systeminformation": "^5.25.11"
   },
