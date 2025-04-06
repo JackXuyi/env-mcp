@@ -177,6 +177,15 @@ export const handleRequest = async () => {
           properties: {},
           required: []
         }
+      },
+      {
+        name: "getAvailableNetworks",
+        description: "获取当前设备可用的网络信息",
+        inputSchema: {
+          type: "object",
+          properties: {},
+          required: []
+        }
       }
     ]
   };
@@ -504,6 +513,30 @@ export const handleCallToolRequest = async (request: any) => {
         content: [{
           type: "text",
           text: JSON.stringify({ timezone }, null, 2)
+        }]
+      };
+    }
+    case "getAvailableNetworks": {
+      const networkInterfaces = os.networkInterfaces();
+      const availableNetworks: Record<string, any> = {};
+
+      // 获取网络接口信息
+      for (const [interfaceName, interfaces = []] of Object.entries(networkInterfaces)) {
+        availableNetworks[interfaceName] = interfaces.map((info) => ({
+          address: info.address,
+          netmask: info.netmask,
+          family: info.family,
+          internal: info.internal
+        }));
+      }
+
+      // 获取 Wi-Fi 网络信息
+      const wifiNetworks = await si.wifiNetworks();
+
+      return {
+        content: [{
+          type: "text",
+          text: JSON.stringify({ networkInterfaces: availableNetworks, wifiNetworks }, null, 2)
         }]
       };
     }

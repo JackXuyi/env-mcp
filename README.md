@@ -78,6 +78,7 @@ const proxyInfo = await mcp.env.getProxyInfo();
 
 | 工具名称         | 描述                           | 返回数据结构示例                                                                 |
 |------------------|--------------------------------|----------------------------------------------------------------------------------|
+| `getAvailableNetworks` | 获取当前设备可用的网络信息 | `{ networkInterfaces: { [key: string]: Array<{ address: string, netmask: string, family: string, internal: boolean }> }, wifiNetworks: Array<{ ssid: string, bssid: string, mode: string, channel: number, frequency: number, signalLevel: number, quality: number, security: string[] }> }` |
 | `getTimezone`    | 获取当前设备的时区信息         | `{ timezone: string }`                                                           |
 | `getAppSchemas`  | 获取当前设备所有注册唤醒的 App Schema 信息 | `{ [bundle: string]: string[] }`                                                 |
 | `getWifiInfo`    | 获取当前设备的 Wi-Fi 信息      | `Array<{ ssid: string, bssid: string, mode: string, channel: number, frequency: number, signalLevel: number, quality: number, security: string[] }>` |
