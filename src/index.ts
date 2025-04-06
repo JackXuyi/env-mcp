@@ -186,6 +186,51 @@ export const handleRequest = async () => {
           properties: {},
           required: []
         }
+      },
+      {
+        name: "getBatteryInfo",
+        description: "获取当前设备的电池信息",
+        inputSchema: {
+          type: "object",
+          properties: {},
+          required: []
+        }
+      },
+      {
+        name: "getGraphicsInfo",
+        description: "获取当前设备的显卡信息",
+        inputSchema: {
+          type: "object",
+          properties: {},
+          required: []
+        }
+      },
+      {
+        name: "getProcesses",
+        description: "获取当前设备的进程信息",
+        inputSchema: {
+          type: "object",
+          properties: {},
+          required: []
+        }
+      },
+      {
+        name: "getBluetoothInfo",
+        description: "获取当前设备的蓝牙信息",
+        inputSchema: {
+          type: "object",
+          properties: {},
+          required: []
+        }
+      },
+      {
+        name: "getAudioInfo",
+        description: "获取当前设备的音频设备信息",
+        inputSchema: {
+          type: "object",
+          properties: {},
+          required: []
+        }
       }
     ]
   };
@@ -537,6 +582,51 @@ export const handleCallToolRequest = async (request: any) => {
         content: [{
           type: "text",
           text: JSON.stringify({ networkInterfaces: availableNetworks, wifiNetworks }, null, 2)
+        }]
+      };
+    }
+    case "getBatteryInfo": {
+      const batteryInfo = await si.battery();
+      return {
+        content: [{
+          type: "text",
+          text: JSON.stringify(batteryInfo, null, 2)
+        }]
+      };
+    }
+    case "getGraphicsInfo": {
+      const graphicsInfo = await si.graphics();
+      return {
+        content: [{
+          type: "text",
+          text: JSON.stringify(graphicsInfo, null, 2)
+        }]
+      };
+    }
+    case "getProcesses": {
+      const processes = await si.processes();
+      return {
+        content: [{
+          type: "text",
+          text: JSON.stringify(processes, null, 2)
+        }]
+      };
+    }
+    case "getBluetoothInfo": {
+      const bluetoothInfo = await si.bluetoothDevices();
+      return {
+        content: [{
+          type: "text",
+          text: JSON.stringify(bluetoothInfo, null, 2)
+        }]
+      };
+    }
+    case "getAudioInfo": {
+      const audioInfo = await si.audio();
+      return {
+        content: [{
+          type: "text",
+          text: JSON.stringify(audioInfo, null, 2)
         }]
       };
     }

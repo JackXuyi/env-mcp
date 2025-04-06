@@ -262,6 +262,48 @@ describe("handleCallToolRequest", () => {
     expect(availableNetworks).toHaveProperty("wifiNetworks");
   });
 
+  it("应该返回电池信息", async () => {
+    const result = await handleCallToolRequest({
+      params: { name: "getBatteryInfo" },
+    });
+    const batteryInfo = JSON.parse(result.content[0].text);
+    expect(batteryInfo).toHaveProperty("hasBattery");
+    expect(batteryInfo).toHaveProperty("isCharging");
+  });
+
+  it("应该返回显卡信息", async () => {
+    const result = await handleCallToolRequest({
+      params: { name: "getGraphicsInfo" },
+    });
+    const graphicsInfo = JSON.parse(result.content[0].text);
+    expect(graphicsInfo).toHaveProperty("controllers");
+    expect(graphicsInfo).toHaveProperty("displays");
+  });
+
+  it("应该返回进程信息", async () => {
+    const result = await handleCallToolRequest({
+      params: { name: "getProcesses" },
+    });
+    const processes = JSON.parse(result.content[0].text);
+    expect(processes).toHaveProperty("list");
+  });
+
+  it("应该返回蓝牙信息", async () => {
+    const result = await handleCallToolRequest({
+      params: { name: "getBluetoothInfo" },
+    });
+    const bluetoothInfo = JSON.parse(result.content[0].text);
+    expect(bluetoothInfo).toBeInstanceOf(Array);
+  });
+
+  it("应该返回音频设备信息", async () => {
+    const result = await handleCallToolRequest({
+      params: { name: "getAudioInfo" },
+    });
+    const audioInfo = JSON.parse(result.content[0].text);
+    expect(audioInfo).toBeInstanceOf(Array);
+  });
+
   it("应该抛出未知工具错误", async () => {
     await expect(
       handleCallToolRequest({ params: { name: "unknownTool" } })

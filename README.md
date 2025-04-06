@@ -78,6 +78,11 @@ const proxyInfo = await mcp.env.getProxyInfo();
 
 | 工具名称         | 描述                           | 返回数据结构示例                                                                 |
 |------------------|--------------------------------|----------------------------------------------------------------------------------|
+| `getBatteryInfo` | 获取当前设备的电池信息         | `{ hasBattery: boolean, isCharging: boolean, maxCapacity: number, currentCapacity: number }` |
+| `getGraphicsInfo` | 获取当前设备的显卡信息        | `{ controllers: Array<{ model: string, vendor: string, bus: string, vram: number }>, displays: Array<{ model: string, resolutionX: number, resolutionY: number }> }` |
+| `getProcesses`   | 获取当前设备的进程信息         | `{ all: number, running: number, blocked: number, sleeping: number, list: Array<{ pid: number, name: string, cpu: number, memory: number }> }` |
+| `getBluetoothInfo` | 获取当前设备的蓝牙信息       | `Array<{ name: string, address: string, connected: boolean }>`                   |
+| `getAudioInfo`   | 获取当前设备的音频设备信息     | `Array<{ name: string, manufacturer: string, default: boolean }>`                |
 | `getAvailableNetworks` | 获取当前设备可用的网络信息 | `{ networkInterfaces: { [key: string]: Array<{ address: string, netmask: string, family: string, internal: boolean }> }, wifiNetworks: Array<{ ssid: string, bssid: string, mode: string, channel: number, frequency: number, signalLevel: number, quality: number, security: string[] }> }` |
 | `getTimezone`    | 获取当前设备的时区信息         | `{ timezone: string }`                                                           |
 | `getAppSchemas`  | 获取当前设备所有注册唤醒的 App Schema 信息 | `{ [bundle: string]: string[] }`                                                 |
