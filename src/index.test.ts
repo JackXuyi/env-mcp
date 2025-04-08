@@ -304,6 +304,22 @@ describe("handleCallToolRequest", () => {
     expect(audioInfo).toBeInstanceOf(Array);
   });
 
+  it("应该返回 USB 设备信息", async () => {
+    const result = await handleCallToolRequest({
+      params: { name: "getUsbInfo" },
+    });
+    const usbInfo = JSON.parse(result.content[0].text);
+    expect(usbInfo).toBeInstanceOf(Array);
+  });
+
+  it("应该返回打印机信息", async () => {
+    const result = await handleCallToolRequest({
+      params: { name: "getPrinterInfo" },
+    });
+    const printerInfo = JSON.parse(result.content[0].text);
+    expect(printerInfo).toBeInstanceOf(Array);
+  });
+
   it("应该抛出未知工具错误", async () => {
     await expect(
       handleCallToolRequest({ params: { name: "unknownTool" } })

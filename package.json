@@ -1,6 +1,6 @@
 {
   "name": "@zhijianren/env-mcp",
-  "version": "0.0.7",
+  "version": "0.0.8",
   "description": "获取当前环境的 mcp",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",

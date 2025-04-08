@@ -231,6 +231,24 @@ export const handleRequest = async () => {
           properties: {},
           required: []
         }
+      },
+      {
+        name: "getUsbInfo",
+        description: "获取当前设备的 USB 设备信息",
+        inputSchema: {
+          type: "object",
+          properties: {},
+          required: []
+        }
+      },
+      {
+        name: "getPrinterInfo",
+        description: "获取当前设备的打印机信息",
+        inputSchema: {
+          type: "object",
+          properties: {},
+          required: []
+        }
       }
     ]
   };
@@ -627,6 +645,24 @@ export const handleCallToolRequest = async (request: any) => {
         content: [{
           type: "text",
           text: JSON.stringify(audioInfo, null, 2)
+        }]
+      };
+    }
+    case "getUsbInfo": {
+      const usbInfo = await si.usb();
+      return {
+        content: [{
+          type: "text",
+          text: JSON.stringify(usbInfo, null, 2)
+        }]
+      };
+    }
+    case "getPrinterInfo": {
+      const printerInfo = await si.printer();
+      return {
+        content: [{
+          type: "text",
+          text: JSON.stringify(printerInfo, null, 2)
         }]
       };
     }
