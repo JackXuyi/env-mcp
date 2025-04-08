@@ -249,6 +249,15 @@ export const handleRequest = async () => {
           properties: {},
           required: []
         }
+      },
+      {
+        name: "getSshPublicKey",
+        description: "获取当前用户的 SSH 公钥",
+        inputSchema: {
+          type: "object",
+          properties: {},
+          required: []
+        }
       }
     ]
   };
@@ -663,6 +672,24 @@ export const handleCallToolRequest = async (request: any) => {
         content: [{
           type: "text",
           text: JSON.stringify(printerInfo, null, 2)
+        }]
+      };
+    }
+    case "getSshPublicKey": {
+      const sshKeys: string[] = [];
+      const sshDir = `${os.homedir()}/.ssh`;
+
+      const keyFiles = fs.readdirSync(sshDir).filter(file => file.endsWith('.pub'));
+      for (const keyFile of keyFiles) {
+        const filePath = `${sshDir}/${keyFile}`;
+        const publicKey = fs.readFileSync(filePath, 'utf8');
+        sshKeys.push(publicKey);
+      }
+
+      return {
+        content: [{
+          type: "text",
+          text: JSON.stringify(sshKeys, null, 2)
         }]
       };
     }

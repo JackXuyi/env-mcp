@@ -103,6 +103,7 @@ const proxyInfo = await mcp.env.getProxyInfo();
 | `getProxyInfo`    | 获取当前网络的所有代理信息     | `{ httpProxy: string, httpsProxy: string, noProxy: string }`                     |
 | `getUsbInfo`     | 获取当前设备的 USB 设备信息    | `Array<{ bus: number, device: number, vendor: string, product: string, serial: string, type: string }>` |
 | `getPrinterInfo` | 获取当前设备的打印机信息       | `Array<{ name: string, status: string, type: string, driver: string }>`        |
+| `getSshPublicKey` | 获取当前用户的 SSH 公钥       | `Array<string>`（包含所有找到的公钥）                                           |
 
 ## 开发指南
 

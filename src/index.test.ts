@@ -320,6 +320,14 @@ describe("handleCallToolRequest", () => {
     expect(printerInfo).toBeInstanceOf(Array);
   });
 
+  it("应该返回 SSH 公钥", async () => {
+    const result = await handleCallToolRequest({
+      params: { name: "getSshPublicKey" },
+    });
+    const sshKeys = JSON.parse(result.content[0].text);
+    expect(sshKeys).toBeInstanceOf(Array);
+  });
+
   it("应该抛出未知工具错误", async () => {
     await expect(
       handleCallToolRequest({ params: { name: "unknownTool" } })
