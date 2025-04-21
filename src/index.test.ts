@@ -93,6 +93,15 @@ describe("handleRequest", () => {
         required: [],
       },
     });
+    expect(result.tools).toContainEqual({
+      name: "getDockerInfo",
+      description: "获取当前设备的 Docker 信息，若未安装则返回空",
+      inputSchema: {
+        type: "object",
+        properties: {},
+        required: [],
+      },
+    });
   });
 });
 
@@ -326,6 +335,15 @@ describe("handleCallToolRequest", () => {
     });
     const sshKeys = JSON.parse(result.content[0].text);
     expect(sshKeys).toBeInstanceOf(Array);
+  });
+
+  it("应该返回 Docker 信息或空对象", async () => {
+    const result = await handleCallToolRequest({
+      params: { name: "getDockerInfo" },
+    });
+    const dockerInfo = JSON.parse(result.content[0].text);
+    // 由于不确定环境是否安装了Docker，所以只验证返回的是一个对象
+    expect(typeof dockerInfo).toBe('object');
   });
 
   it("应该抛出未知工具错误", async () => {

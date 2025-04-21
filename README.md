@@ -72,6 +72,9 @@ const ipv6Info = await mcp.env.getIpv6Info();
 
 // 获取代理信息
 const proxyInfo = await mcp.env.getProxyInfo();
+
+// 获取 Docker 信息
+const dockerInfo = await mcp.env.getDockerInfo();
 ```
 
 ### 支持的工具列表
@@ -104,6 +107,7 @@ const proxyInfo = await mcp.env.getProxyInfo();
 | `getUsbInfo`     | 获取当前设备的 USB 设备信息    | `Array<{ bus: number, device: number, vendor: string, product: string, serial: string, type: string }>` |
 | `getPrinterInfo` | 获取当前设备的打印机信息       | `Array<{ name: string, status: string, type: string, driver: string }>`        |
 | `getSshPublicKey` | 获取当前用户的 SSH 公钥       | `Array<string>`（包含所有找到的公钥）                                           |
+| `getDockerInfo`  | 获取当前设备的 Docker 信息     | `{ version: object, images: Array<object>, containers: Array<object> }` 或 `{}` （未安装时）|
 
 ## 开发指南
 

@@ -258,6 +258,15 @@ export const handleRequest = async () => {
           properties: {},
           required: []
         }
+      },
+      {
+        name: "getDockerInfo",
+        description: "获取当前设备的 Docker 信息，若未安装则返回空",
+        inputSchema: {
+          type: "object",
+          properties: {},
+          required: []
+        }
       }
     ]
   };
@@ -690,6 +699,33 @@ export const handleCallToolRequest = async (request: any) => {
         content: [{
           type: "text",
           text: JSON.stringify(sshKeys, null, 2)
+        }]
+      };
+    }
+    case "getDockerInfo": {
+      let dockerInfo = {};
+      try {
+        // 检查 Docker 是否安装
+        execSync('docker --version');
+        // 获取 Docker 信息
+        const dockerVersion = execSync('docker version --format \'{{json .}}\'').toString();
+        const dockerImages = execSync('docker images --format \'{{json .}}\'').toString().split('\n').filter(Boolean).map(line => JSON.parse(line));
+        const dockerContainers = execSync('docker ps -a --format \'{{json .}}\'').toString().split('\n').filter(Boolean).map(line => JSON.parse(line));
+        
+        dockerInfo = {
+          version: JSON.parse(dockerVersion),
+          images: dockerImages,
+          containers: dockerContainers
+        };
+      } catch (error) {
+        // Docker 未安装或者出错，返回空对象
+        dockerInfo = {};
+      }
+
+      return {
+        content: [{
+          type: "text",
+          text: JSON.stringify(dockerInfo, null, 2)
         }]
       };
     }
