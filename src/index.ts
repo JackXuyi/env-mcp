@@ -267,6 +267,15 @@ export const handleRequest = async () => {
           properties: {},
           required: []
         }
+      },
+      {
+        name: "getNodeInfo",
+        description: "获取当前设备安装的 Node.js 版本信息",
+        inputSchema: {
+          type: "object",
+          properties: {},
+          required: []
+        }
       }
     ]
   };
@@ -726,6 +735,46 @@ export const handleCallToolRequest = async (request: any) => {
         content: [{
           type: "text",
           text: JSON.stringify(dockerInfo, null, 2)
+        }]
+      };
+    }
+    case "getNodeInfo": {
+      let nodeInfo = {};
+      try {
+        // 获取 Node.js 版本信息
+        const nodeVersion = process.version;
+        const nodeFullVersion = execSync('node --version').toString().trim();
+        const npmVersion = execSync('npm --version').toString().trim();
+        
+        // 获取已安装的全局 npm 包
+        const globalPackages = execSync('npm list -g --depth=0 --json').toString();
+        const parsedGlobalPackages = JSON.parse(globalPackages);
+        
+        // 获取 Node.js 环境信息
+        nodeInfo = {
+          version: nodeVersion,
+          fullVersion: nodeFullVersion,
+          npmVersion: npmVersion,
+          platform: process.platform,
+          arch: process.arch,
+          globalPackages: parsedGlobalPackages.dependencies || {},
+          execPath: process.execPath,
+          features: process.features,
+          modules: process.versions
+        };
+      } catch (error) {
+        // 出错时返回基本信息
+        nodeInfo = {
+          version: process.version,
+          platform: process.platform,
+          arch: process.arch
+        };
+      }
+
+      return {
+        content: [{
+          type: "text",
+          text: JSON.stringify(nodeInfo, null, 2)
         }]
       };
     }

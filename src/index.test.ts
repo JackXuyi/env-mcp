@@ -346,6 +346,16 @@ describe("handleCallToolRequest", () => {
     expect(typeof dockerInfo).toBe('object');
   });
 
+  it("应该返回 Node.js 版本信息", async () => {
+    const result = await handleCallToolRequest({
+      params: { name: "getNodeInfo" },
+    });
+    const nodeInfo = JSON.parse(result.content[0].text);
+    expect(nodeInfo).toHaveProperty("version");
+    expect(nodeInfo).toHaveProperty("platform");
+    expect(nodeInfo).toHaveProperty("arch");
+  });
+
   it("应该抛出未知工具错误", async () => {
     await expect(
       handleCallToolRequest({ params: { name: "unknownTool" } })

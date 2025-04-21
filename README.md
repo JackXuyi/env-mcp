@@ -75,6 +75,9 @@ const proxyInfo = await mcp.env.getProxyInfo();
 
 // 获取 Docker 信息
 const dockerInfo = await mcp.env.getDockerInfo();
+
+// 获取 Node.js 版本信息
+const nodeInfo = await mcp.env.getNodeInfo();
 ```
 
 ### 支持的工具列表
@@ -108,7 +111,7 @@ const dockerInfo = await mcp.env.getDockerInfo();
 | `getPrinterInfo` | 获取当前设备的打印机信息       | `Array<{ name: string, status: string, type: string, driver: string }>`        |
 | `getSshPublicKey` | 获取当前用户的 SSH 公钥       | `Array<string>`（包含所有找到的公钥）                                           |
 | `getDockerInfo`  | 获取当前设备的 Docker 信息     | `{ version: object, images: Array<object>, containers: Array<object> }` 或 `{}` （未安装时）|
-
+| `getNodeInfo`  | 获取当前设备安装的 Node.js 版本信息 | `{ version: string, fullVersion: string, npmVersion: string, platform: string, arch: string, globalPackages: object, execPath: string, features: object, modules: object }` |
 ## 开发指南
 
 ```bash
